@@ -96,11 +96,15 @@ sensor.set_pixformat(sensor.RGB565)
 sensor.set_framesize(sensor.QVGA) #QVGA=320x240
 sensor.run(1)
 
+lcd.draw_string(0, 2, "POS for LXD BOOK", lcd.WHITE, lcd.BLACK)
+print("POS for LXD BOOK")
+
 book1 = image.Image("/sd/lxdbook_print.jpg")
 book2 = image.Image("/sd/lxdbook_ebook.jpg")
 
 def buy(item = None):
-    print(res[0].payload())
+    with open("/sd/sales.csv", mode="a") as f:
+        f.write("{}, {}\n".format(time.time(), item))
     ring_bell(wav_dev)
 
 try:
@@ -117,11 +121,13 @@ try:
 
             while True:
                 if but_b.value() == 0:
+                    lcd.draw_string(2, 110, "CANCEL", lcd.WHITE, lcd.BLACK)
                     break
                 if but_a.value() == 0:
+                    lcd.draw_string(2, 110, "CONFIRM", lcd.WHITE, lcd.BLACK)
                     buy(res[0].payload())
                     break
-                time.sleep(0.5)
+                time.sleep(0.3)
         lcd.display(img)
 
 except KeyboardInterrupt:
